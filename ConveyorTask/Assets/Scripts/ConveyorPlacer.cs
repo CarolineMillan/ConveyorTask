@@ -3,8 +3,9 @@ using UnityEngine.InputSystem;
 
 public class ConveyorPlacer : MonoBehaviour
 {
-    [SerializeField] GameObject ConveyorPrefab;
+    [SerializeField] Conveyor ConveyorPrefab;
     [SerializeField] LayerMask FloorMask;
+    [SerializeField] Conveyor LastPlaced;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -26,7 +27,18 @@ public class ConveyorPlacer : MonoBehaviour
             
             if (hit)
             {
-                GameObject obj = Instantiate(ConveyorPrefab, hitInfo.point, Quaternion.identity);
+                if (LastPlaced != null && Vector3.Distance(LastPlaced.EndPoint.position, hitInfo.point) < 1f) {
+                    Debug.Log("Snap!");
+                    Conveyor obj = Instantiate(ConveyorPrefab, hitInfo.point, LastPlaced.transform.rotation);//Quaternion.identity);
+                    // to snap, look at obj.StartPoint and LastPlaced.EndPoint
+                    Vector3 diff = LastPlaced.EndPoint.position - obj.StartPoint.position;
+                    obj.transform.position += diff;
+                    LastPlaced = obj;
+                }
+                else {
+                    Conveyor obj = Instantiate(ConveyorPrefab, hitInfo.point, Quaternion.identity);
+                    LastPlaced = obj;
+                }
             }
             
         }

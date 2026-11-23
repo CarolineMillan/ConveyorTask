@@ -4,7 +4,9 @@ using UnityEngine.InputSystem;
 public class ConveyorPlacer : MonoBehaviour
 {
     [SerializeField] Conveyor ConveyorPrefab;
+    [SerializeField] ProductMover Product;
     [SerializeField] LayerMask FloorMask;
+    [SerializeField] Conveyor FirstPlaced;
     [SerializeField] Conveyor LastPlaced;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -27,20 +29,43 @@ public class ConveyorPlacer : MonoBehaviour
             
             if (hit)
             {
-                if (LastPlaced != null && Vector3.Distance(LastPlaced.EndPoint.position, hitInfo.point) < 1f) {
+                if (LastPlaced != null && Vector3.Distance(LastPlaced.EndPoint.position, hitInfo.point) < 2f) {
                     Debug.Log("Snap!");
-                    Conveyor obj = Instantiate(ConveyorPrefab, hitInfo.point, LastPlaced.transform.rotation);//Quaternion.identity);
-                    // to snap, look at obj.StartPoint and LastPlaced.EndPoint
+                    Conveyor obj = Instantiate(ConveyorPrefab, hitInfo.point, LastPlaced.transform.rotation);
                     Vector3 diff = LastPlaced.EndPoint.position - obj.StartPoint.position;
                     obj.transform.position += diff;
+                    if (LastPlaced != null) {
+                        LastPlaced.Next = obj;
+                    } else
+                    {
+                        // TODO: unreachable? delete?
+                        FirstPlaced = obj;
+                    }
                     LastPlaced = obj;
                 }
                 else {
                     Conveyor obj = Instantiate(ConveyorPrefab, hitInfo.point, Quaternion.identity);
+                    //if (LastPlaced != null) {
+                    //    LastPlaced.Next = obj;
+                    //} else
+                    if (LastPlaced == null)
+                    {
+                        FirstPlaced = obj;
+                    }
                     LastPlaced = obj;
                 }
             }
             
+        }
+
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            if (FirstPlaced != null)
+            {
+                // spawn a product
+                ProductMover product = Instantiate(Product, FirstPlaced.StartPoint.position, Quaternion.identity);
+                product.CurrentConveyor = FirstPlaced;
+            }
         }
     }
 }

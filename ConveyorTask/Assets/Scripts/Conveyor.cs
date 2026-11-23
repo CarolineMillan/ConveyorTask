@@ -7,6 +7,7 @@ public class Conveyor : MonoBehaviour
     
     public Transform StartPoint => start;
     public Transform EndPoint => end;
+    public Conveyor Next;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

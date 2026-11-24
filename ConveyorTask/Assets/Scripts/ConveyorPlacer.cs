@@ -19,6 +19,7 @@ public class ConveyorPlacer : MonoBehaviour
         SelectedConveyor = ConveyorPrefab[0];
         ProductIndex = 0;
         Time.timeScale = 1;
+        currentAngle = 0;
     }
 
     public void SetRunning(bool running)
@@ -49,7 +50,12 @@ public class ConveyorPlacer : MonoBehaviour
             {
                 if (LastPlaced != null && Vector3.Distance(LastPlaced.EndPoint.position, hitInfo.point) < 2f) {
                     Debug.Log("Snap!");
-                    Conveyor obj = Instantiate(SelectedConveyor, hitInfo.point, LastPlaced.transform.rotation);
+                    if (currentAngle == 180)
+                    {
+                        currentAngle = 0;
+                    }
+                    Quaternion rot = LastPlaced.transform.rotation * Quaternion.Euler(0, currentAngle, 0);
+                    Conveyor obj = Instantiate(SelectedConveyor, hitInfo.point, rot);//LastPlaced.transform.rotation);
                     Vector3 diff = LastPlaced.EndPoint.position - obj.StartPoint.position;
                     obj.transform.position += diff;
                     if (LastPlaced != null) {
@@ -95,7 +101,7 @@ public class ConveyorPlacer : MonoBehaviour
         // rotate conveyor 90 degrees
         if (Keyboard.current.rKey.wasPressedThisFrame)
         {
-            currentAngle += 90;
+            currentAngle = (currentAngle + 90 ) % 360;
         }
     }
 }

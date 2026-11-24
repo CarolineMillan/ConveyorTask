@@ -16,6 +16,12 @@ public class ConveyorPlacer : MonoBehaviour
     {
         SelectedConveyor = ConveyorPrefab[0];
         ProductIndex = 0;
+        Time.timeScale = 1;
+    }
+
+    public void SetRunning(bool running)
+    {
+        Time.timeScale = running ? 1 : 0;
     }
     
     // Select is called when a Conveyor is selected in the menu

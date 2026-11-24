@@ -5,103 +5,101 @@ using UnityEngine.InputSystem;
 
 public class ConveyorPlacer : MonoBehaviour
 {
-    [SerializeField] Conveyor[] ConveyorPrefab;
-    [SerializeField] Conveyor SelectedConveyor;
-    [SerializeField] ProductMover[] ProductPrefab;
-    [SerializeField] int ProductIndex;
-    [SerializeField] LayerMask FloorMask;
-    [SerializeField] List<Conveyor> FirstPlaced;
-    [SerializeField] Conveyor LastPlaced;
-    [SerializeField] float currentAngle;
+    [SerializeField] Conveyor[] conveyorPrefab;
+    Conveyor selectedConveyor;
+    [SerializeField] ProductMover[] productPrefab;
+    int productIndex = 0;
+    [SerializeField] LayerMask floorMask;
+    readonly List<Conveyor> firstPlaced = new List<Conveyor>();
+    Conveyor lastPlaced;
+    float currentAngle = 0;
+    [SerializeField] float snapDistance = 2f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SelectedConveyor = ConveyorPrefab[0];
-        ProductIndex = 0;
+        selectedConveyor = conveyorPrefab[0];
         Time.timeScale = 1;
-        currentAngle = 0;
     }
 
     public void SetRunning(bool running)
     {
         Time.timeScale = running ? 1 : 0;
     }
-    
+
     // Select is called when a Conveyor is selected in the menu
     public void Select(int index)
     {
-        SelectedConveyor = ConveyorPrefab[index];
+        selectedConveyor = conveyorPrefab[index];
     }
 
     // Update is called once per frame
     void Update()
     {
         // when left mouse button is clicked, use the position to create an instance of ConveyorPrefab
-        
-        if (Mouse.current.leftButton.wasPressedThisFrame  && !EventSystem.current.IsPointerOverGameObject()) {
-            
-            Vector2 pos = Mouse.current.position.ReadValue();
-
-            Ray ray = Camera.main.ScreenPointToRay(pos);
-
-            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, FloorMask);
-            
-            if (hit)
-            {
-                if (LastPlaced != null && Vector3.Distance(LastPlaced.EndPoint.position, hitInfo.point) < 2f) {
-                    Debug.Log("Snap!");
-                    if (currentAngle == 180)
-                    {
-                        currentAngle = 0;
-                    }
-                    Quaternion rot = LastPlaced.transform.rotation * Quaternion.Euler(0, currentAngle, 0);
-                    Conveyor obj = Instantiate(SelectedConveyor, hitInfo.point, rot);//LastPlaced.transform.rotation);
-                    Vector3 diff = LastPlaced.EndPoint.position - obj.StartPoint.position;
-                    obj.transform.position += diff;
-                    if (LastPlaced != null) {
-                        LastPlaced.Next = obj;
-                    } //else
-                    //{
-                        // TODO: unreachable? delete?
-                    //    FirstPlaced.Add(obj);
-                    //}
-                    LastPlaced = obj;
-                }
-                else {
-                    Conveyor obj = Instantiate(SelectedConveyor, hitInfo.point, Quaternion.Euler(0, currentAngle, 0));
-                    //if (LastPlaced != null) {
-                    //    LastPlaced.Next = obj;
-                    //} else
-                    //if (LastPlaced == null)
-                    //{
-                        FirstPlaced.Add(obj);
-                    //}
-                    LastPlaced = obj;
-                }
-            }
-            
+        if (Mouse.current.leftButton.wasPressedThisFrame && !EventSystem.current.IsPointerOverGameObject())
+        {
+            HandleClick();
         }
 
         // places a product on the conveyor
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            if (FirstPlaced != null)
-            {
-                // spawn a product
-                foreach (Conveyor conveyor in FirstPlaced) {
-                    ProductMover product = Instantiate(ProductPrefab[ProductIndex], conveyor.StartPoint.position, Quaternion.identity);
-                    product.CurrentConveyor = conveyor;
-                }
-                
-                ProductIndex = (ProductIndex + 1) % (ProductPrefab.Length);
-                
-            }
+            HandleSpawn();
         }
-        
+
         // rotate conveyor 90 degrees
         if (Keyboard.current.rKey.wasPressedThisFrame)
         {
-            currentAngle = (currentAngle + 90 ) % 360;
+            HandleRotate();
         }
+    }
+
+    void HandleSpawn()
+    {
+        foreach (Conveyor conveyor in firstPlaced)
+        {
+            ProductMover product = Instantiate(productPrefab[productIndex], conveyor.StartPoint.position, Quaternion.identity);
+            product.CurrentConveyor = conveyor;
+        }
+
+        productIndex = (productIndex + 1) % (productPrefab.Length);
+
+    }
+
+    void HandleClick()
+    {
+        Vector2 pos = Mouse.current.position.ReadValue();
+
+        Ray ray = Camera.main.ScreenPointToRay(pos);
+
+        bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, floorMask);
+
+        if (!hit) { return; }
+        if (lastPlaced != null && Vector3.Distance(lastPlaced.EndPoint.position, hitInfo.point) < snapDistance)
+        {
+
+            // rotate by the currentAngle
+            if (currentAngle == 180) { currentAngle = 0; }
+            Quaternion rot = lastPlaced.transform.rotation * Quaternion.Euler(0, currentAngle, 0);
+            Conveyor obj = Instantiate(selectedConveyor, hitInfo.point, rot);
+
+            // gets the distance to move the conveyer to snap onto the previous conveyor
+            Vector3 diff = lastPlaced.EndPoint.position - obj.StartPoint.position;
+            obj.transform.position += diff;
+            lastPlaced.Next = obj;
+            lastPlaced = obj;
+            currentAngle = 0;
+        }
+        else
+        {
+            Conveyor obj = Instantiate(selectedConveyor, hitInfo.point, Quaternion.Euler(0, currentAngle, 0));
+            firstPlaced.Add(obj);
+            lastPlaced = obj;
+        }
+    }
+
+    void HandleRotate()
+    {
+        currentAngle = (currentAngle + 90) % 360;
     }
 }

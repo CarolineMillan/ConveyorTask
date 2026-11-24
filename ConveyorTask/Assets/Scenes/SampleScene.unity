@@ -163,21 +163,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eba4352603e5b433fbf786cc46782c67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConveyorPlacer
-  ConveyorPrefab:
+  conveyorPrefab:
   - {fileID: 8626965376999906516, guid: 05aa2ae1618e749a5a2e0837a4d6ef5c, type: 3}
   - {fileID: 3941341848503983214, guid: 1d8db4455b2f6439fb846817cf140ec2, type: 3}
   - {fileID: 2369711547336197728, guid: d6118427897634dc09bc3c23ff69928b, type: 3}
   - {fileID: 2369711547336197728, guid: 7c7d940eb9ae847d597817777b60c04f, type: 3}
-  SelectedConveyor: {fileID: 0}
-  ProductPrefab:
+  productPrefab:
   - {fileID: 831310262256019577, guid: e83ec89cf29a844afbf8bcf042ef168e, type: 3}
   - {fileID: 8024768324785816888, guid: 61d7221a6652b4dcc82679c2e58ceaaf, type: 3}
-  ProductIndex: 0
-  FloorMask:
+  floorMask:
     serializedVersion: 2
     m_Bits: 8
-  FirstPlaced: []
-  LastPlaced: {fileID: 0}
 --- !u!1 &224787121
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,7 +4,8 @@ using UnityEngine;
 public class ProductMover : MonoBehaviour
 {
     
-    [SerializeField] float speed = 5f;
+    [SerializeField] float moveSpeed = 5f;
+    [SerializeField] float turnSpeed = 180f;
     public Conveyor CurrentConveyor;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -15,7 +16,11 @@ public class ProductMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = Vector3.MoveTowards(transform.position, CurrentConveyor.EndPoint.position, speed*Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, CurrentConveyor.EndPoint.position, moveSpeed*Time.deltaTime);
+
+        Vector3 direction = CurrentConveyor.EndPoint.position - CurrentConveyor.StartPoint.position;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, turnSpeed*Time.deltaTime);
         
         if (Vector3.Distance(transform.position, CurrentConveyor.EndPoint.position) < 0.01) {
             CurrentConveyor = CurrentConveyor.Next;

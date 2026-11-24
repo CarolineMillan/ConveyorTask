@@ -1,11 +1,13 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class ConveyorPlacer : MonoBehaviour
 {
     [SerializeField] Conveyor[] ConveyorPrefab;
     [SerializeField] Conveyor SelectedConveyor;
-    [SerializeField] ProductMover Product;
+    [SerializeField] ProductMover[] ProductPrefab;
+    [SerializeField] int ProductIndex;
     [SerializeField] LayerMask FloorMask;
     [SerializeField] Conveyor FirstPlaced;
     [SerializeField] Conveyor LastPlaced;
@@ -13,6 +15,7 @@ public class ConveyorPlacer : MonoBehaviour
     void Start()
     {
         SelectedConveyor = ConveyorPrefab[0];
+        ProductIndex = 0;
     }
     
     // Select is called when a Conveyor is selected in the menu
@@ -26,7 +29,7 @@ public class ConveyorPlacer : MonoBehaviour
     {
         // when left mouse button is clicked, use the position to create an instance of ConveyorPrefab
         
-        if (Mouse.current.leftButton.wasPressedThisFrame) {
+        if (Mouse.current.leftButton.wasPressedThisFrame  && !EventSystem.current.IsPointerOverGameObject()) {
             
             Vector2 pos = Mouse.current.position.ReadValue();
 
@@ -65,13 +68,16 @@ public class ConveyorPlacer : MonoBehaviour
             
         }
 
+        // places a product on the conveyor
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             if (FirstPlaced != null)
             {
                 // spawn a product
-                ProductMover product = Instantiate(Product, FirstPlaced.StartPoint.position, Quaternion.identity);
+                ProductMover product = Instantiate(ProductPrefab[ProductIndex], FirstPlaced.StartPoint.position, Quaternion.identity);
                 product.CurrentConveyor = FirstPlaced;
+                
+                ProductIndex = (ProductIndex + 1) % (ProductPrefab.Length);
             }
         }
     }

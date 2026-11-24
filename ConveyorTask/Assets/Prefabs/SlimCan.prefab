@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2807344379361634454}
+  - component: {fileID: 8024768324785816888}
   m_Layer: 0
   m_Name: SlimCan
   m_TagString: Untagged
@@ -32,6 +33,20 @@ Transform:
   - {fileID: 4860588740491970302}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8024768324785816888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4122362269375826040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a487f26208a07495e8e125bb3801b496, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProductMover
+  speed: 5
+  CurrentConveyor: {fileID: 0}
 --- !u!1001 &4971691180102574357
 PrefabInstance:
   m_ObjectHideFlags: 0

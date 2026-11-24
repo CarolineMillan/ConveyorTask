@@ -11,3 +11,5 @@
 *.csproj
 *.slnx
 .DS_Store
+Build Profiles/
+Build Profiles.meta

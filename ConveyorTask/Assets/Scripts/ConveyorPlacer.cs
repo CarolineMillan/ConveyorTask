@@ -12,6 +12,7 @@ public class ConveyorPlacer : MonoBehaviour
     [SerializeField] LayerMask FloorMask;
     [SerializeField] List<Conveyor> FirstPlaced;
     [SerializeField] Conveyor LastPlaced;
+    [SerializeField] float currentAngle;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -61,7 +62,7 @@ public class ConveyorPlacer : MonoBehaviour
                     LastPlaced = obj;
                 }
                 else {
-                    Conveyor obj = Instantiate(SelectedConveyor, hitInfo.point, Quaternion.identity);
+                    Conveyor obj = Instantiate(SelectedConveyor, hitInfo.point, Quaternion.Euler(0, currentAngle, 0));
                     //if (LastPlaced != null) {
                     //    LastPlaced.Next = obj;
                     //} else
@@ -89,6 +90,12 @@ public class ConveyorPlacer : MonoBehaviour
                 ProductIndex = (ProductIndex + 1) % (ProductPrefab.Length);
                 
             }
+        }
+        
+        // rotate conveyor 90 degrees
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            currentAngle += 90;
         }
     }
 }

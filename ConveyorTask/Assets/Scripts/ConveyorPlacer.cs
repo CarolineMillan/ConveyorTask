@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -9,7 +10,7 @@ public class ConveyorPlacer : MonoBehaviour
     [SerializeField] ProductMover[] ProductPrefab;
     [SerializeField] int ProductIndex;
     [SerializeField] LayerMask FloorMask;
-    [SerializeField] Conveyor FirstPlaced;
+    [SerializeField] List<Conveyor> FirstPlaced;
     [SerializeField] Conveyor LastPlaced;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -52,11 +53,11 @@ public class ConveyorPlacer : MonoBehaviour
                     obj.transform.position += diff;
                     if (LastPlaced != null) {
                         LastPlaced.Next = obj;
-                    } else
-                    {
+                    } //else
+                    //{
                         // TODO: unreachable? delete?
-                        FirstPlaced = obj;
-                    }
+                    //    FirstPlaced.Add(obj);
+                    //}
                     LastPlaced = obj;
                 }
                 else {
@@ -64,10 +65,10 @@ public class ConveyorPlacer : MonoBehaviour
                     //if (LastPlaced != null) {
                     //    LastPlaced.Next = obj;
                     //} else
-                    if (LastPlaced == null)
-                    {
-                        FirstPlaced = obj;
-                    }
+                    //if (LastPlaced == null)
+                    //{
+                        FirstPlaced.Add(obj);
+                    //}
                     LastPlaced = obj;
                 }
             }
@@ -80,10 +81,13 @@ public class ConveyorPlacer : MonoBehaviour
             if (FirstPlaced != null)
             {
                 // spawn a product
-                ProductMover product = Instantiate(ProductPrefab[ProductIndex], FirstPlaced.StartPoint.position, Quaternion.identity);
-                product.CurrentConveyor = FirstPlaced;
+                foreach (Conveyor conveyor in FirstPlaced) {
+                    ProductMover product = Instantiate(ProductPrefab[ProductIndex], conveyor.StartPoint.position, Quaternion.identity);
+                    product.CurrentConveyor = conveyor;
+                }
                 
                 ProductIndex = (ProductIndex + 1) % (ProductPrefab.Length);
+                
             }
         }
     }

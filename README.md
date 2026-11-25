@@ -40,16 +40,16 @@ Press the toggle next to 'Conveyors Running' to toggle the product movement alon
  - Unity 6000.6.10f1
  - C#
  - Claude was used as a tutor/code reviewer to learn Unity and C#
- - VSCode / neovim
+ - VSCode
  - Git/GitHub and LFS
  - Built on macOS
 
 ## Known limitations
 
- - Rotated conveyors overlap slightly at the corners when snapped.
- - Floor is a single level/plane. Ideally I would have added the option for floor boxes/blocks to raise the floor to connect generic/short conveyors to both ends of an incline conveyor.
- - Conveyors must be snapped in order. You can only snap a conveyor to the end of the chain. Ideally I would have added the ability to snap to either end of the chain, and even allow branching at points with rotated conveyors.
- - A chain of incline down conveyors snaps together to go through the floor. Similarly, incline up conveyors snap together to raise off the floor. 
+ - Rotated conveyors overlap slightly at the corners when snapped
+ - Floor is a single level/plane, there are no other levels
+ - Conveyors must be snapped in order. You can only snap a conveyor to the end of the chain not the beginning
+ - A chain of incline down conveyors snaps together to go through the floor. Similarly, incline up conveyors snap together to raise off the floor.
  - Windows build is untested. I couldn't get access to a Windows machine or set up a VM within the timeframe, and built this project on macOS. The macOS build has been tested.
 
 [GitHub link](https://github.com/CarolineMillan/ConveyorTask)
